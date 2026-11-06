@@ -25,3 +25,12 @@
 ## Root
 
 `.env.example` mirrors backend essentials for reference.
+
+## SMS (backend)
+
+| Variable | Required | Description |
+|---|---|---|
+| SMS_PROVIDER | no | auto/fake/thrivewave (default auto) |
+| THRIVEWAVE_API_BASE_URL | for live | Unverified; leave blank |
+| THRIVEWAVE_API_KEY | for live | Unverified; leave blank |
+| THRIVEWAVE_SENDER_ID | for live | Unverified; leave blank |

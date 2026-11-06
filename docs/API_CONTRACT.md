@@ -58,3 +58,11 @@ Swagger UI: `/api/docs`.
 ## Exports
 - `GET /api/v1/exports/reconciliation`
 - `GET /api/v1/exports/exceptions`
+
+## Notifications
+- `GET /api/v1/notifications/preferences`
+- `PATCH /api/v1/notifications/preferences` body `{ enabled, recipient?, consent? }`
+- `GET /api/v1/notifications/sms`
+- `GET /api/v1/notifications/sms/:id`
+- `POST /api/v1/notifications/sms/:id/retry`
+- `POST /api/v1/notifications/process`

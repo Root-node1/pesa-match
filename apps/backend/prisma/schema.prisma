@@ -45,6 +45,7 @@ enum MatchDecisionStatus {
 
 enum NotificationStatus {
   PENDING
+  PROCESSING
   SUBMITTED
   DELIVERED
   FAILED
@@ -67,6 +68,10 @@ model Organization {
   id            String          @id @default(uuid())
   name          String
   currency      String          @default("KES")
+  smsNotificationsEnabled Boolean @default(false)
+  smsRecipient   String?
+  smsConsentGrantedAt DateTime?
+  smsConsentWithdrawnAt DateTime?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   memberships   Membership[]

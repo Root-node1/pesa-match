@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 
 @Injectable()
 export class ReconciliationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private notifications: NotificationsService) {}
 
   async run(orgId: string, actorUserId: string | null) {
     return this.prisma.$transaction(
@@ -174,7 +175,11 @@ export class ReconciliationService {
           await tx.payment.update({ where: { id: payment.id }, data: { status: status as any, reconciliationStatus: recon as any } });
         }
 
-        await tx.auditEvent.create({
+        const partialPayments = allPayments.filter((p) => {
+          const allocated = paymentAllocated.get(p.id) ?? 0;
+          return allocated > 0 && allocated < Number(p.amountMinor);
+        }).length;
+        const auditEvent = await tx.auditEvent.create({
           data: {
             organizationId: orgId,
             actorUserId,
@@ -185,6 +190,7 @@ export class ReconciliationService {
           },
         });
 
+        await this.notifications.queueReconciliationSummary(orgId, autoMatches, suggestions, partialPayments, `recon:${orgId}:${auditEvent.id}`);
         return { autoMatches, suggestions, duplicates: duplicateIds.size };
       },
       { isolationLevel: 'Serializable' },

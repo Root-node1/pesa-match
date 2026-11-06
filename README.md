@@ -4,7 +4,7 @@ PesaMatch — payment reconciliation and exception management for small Kenyan b
 
 ## Status
 
-Milestone 3 complete: frontend integration foundation and designer handoff.
+Milestone 4 complete: ThriveWave SMS integration (provider abstraction + outbox; live unverified).
 
 ## Stack
 
@@ -12,7 +12,7 @@ Milestone 3 complete: frontend integration foundation and designer handoff.
 - Backend: NestJS, Node.js, TypeScript (RumptyCloud, Docker).
 - Database: PostgreSQL + Prisma.
 - Local dev: Docker Compose.
-- SMS: ThriveWave (planned, Milestone 4).
+- SMS: ThriveWave (provider abstraction + outbox; live unverified).
 
 ## Structure
 
@@ -78,7 +78,7 @@ Prisma schema: `apps/backend/prisma/schema.prisma`. Migrations: `apps/backend/pr
 
 ## SMS
 
-Planned (Milestone 4).
+Provider abstraction and outbox implemented. Live ThriveWave submission unverified (missing API docs).
 
 ## Implementation status
 
@@ -90,7 +90,7 @@ Planned (Milestone 4).
 ## Known limitations
 
 - CSV import requires integer minor units.
-- No SMS integration yet (Milestone 4).
+- Live ThriveWave submission not verified.
 - Frontend uses default Nuxt UI template styling; designer refinement pending.
 - Audit trail is application-level, not tamper-proof.
 

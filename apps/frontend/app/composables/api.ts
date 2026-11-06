@@ -50,5 +50,9 @@ export const api = {
   reverseMatch: (id: string, reason: string) => request<any>(`/matches/${id}/reverse`, { method: 'POST', body: { reason } }),
   matchHistory: (id: string) => request<any>(`/matches/${id}/history`),
   exportReconciliation: () => `${base()}/exports/reconciliation`,
+  getNotificationPreferences: () => request<any>('/notifications/preferences'),
+  updateNotificationPreferences: (body: any) => request<any>('/notifications/preferences', { method: 'PATCH', body }),
+  listSms: () => request<any>('/notifications/sms'),
+  retrySms: (id: string) => request<any>(`/notifications/sms/${id}/retry`, { method: 'POST' }),
   exportExceptions: () => `${base()}/exports/exceptions`
 }

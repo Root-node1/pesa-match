@@ -21,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm ci --legacy-peer-deps
+      - run: cd apps/backend && npx prisma generate
       - run: cd apps/backend && DATABASE_URL="postgresql://pesa:pesa@localhost:5432/pesa_match_test?schema=public" npx prisma migrate deploy
       - run: npm run lint -w apps/backend
       - run: npm run build -w apps/backend

@@ -45,3 +45,13 @@ Copy `apps/backend/.env.example` to `apps/backend/.env` (done by setup). Adjust 
 ## Notes
 
 - If Docker Compose is unavailable, `db-up`/`db-down` print a clear error and do not claim success.
+
+## CI build sequence
+
+1. `npm ci --legacy-peer-deps`
+2. `cd apps/backend && npx prisma generate`
+3. `cd apps/backend && npx prisma migrate deploy`
+4. `npm run lint -w apps/backend`
+5. `npm run build -w apps/backend`
+6. `npm run test -w apps/backend`
+7. `DATABASE_URL=... npm run test:e2e -w apps/backend`

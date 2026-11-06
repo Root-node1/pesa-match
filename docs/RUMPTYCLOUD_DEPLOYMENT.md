@@ -8,3 +8,9 @@
 6. Verify `GET /api/v1/health`.
 
 No database ports should be exposed publicly.
+
+## Local verification performed
+- Docker image built successfully.
+- Container started and `/api/v1/health` returned `{"status":"ok","database":"up"}`.
+- Prisma migrations applied to PostgreSQL.
+- No secrets baked into image.

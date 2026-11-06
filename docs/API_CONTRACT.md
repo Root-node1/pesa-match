@@ -25,3 +25,36 @@ DTOs validated with class-validator; unknown fields rejected. Errors return 400 
 ## OpenAPI
 
 Swagger UI: `/api/docs`.
+
+## Orders
+- `POST /api/v1/orders` body `{ externalReference?, customerName?, description?, amountMinor, currency?, orderDate? }`
+- `GET /api/v1/orders` filters: status, reconciliationStatus, reference, dateFrom, dateTo, page, limit
+- `GET /api/v1/orders/:id`
+
+## Payments
+- `POST /api/v1/payments`
+- `GET /api/v1/payments` filters: reconciliationStatus, reference, dateFrom, dateTo, page, limit
+- `GET /api/v1/payments/:id`
+
+## Imports
+- `POST /api/v1/imports/orders` multipart `file`
+- `POST /api/v1/imports/payments` multipart `file`
+- `GET /api/v1/imports`
+- `GET /api/v1/imports/:id`
+
+## Reconciliation
+- `POST /api/v1/reconciliation/run`
+- `GET /api/v1/reconciliation/summary`
+- `GET /api/v1/reconciliation/exceptions`
+- `GET /api/v1/reconciliation/matches?status=`
+
+## Review
+- `POST /api/v1/matches/:id/approve` body `{ reason? }`
+- `POST /api/v1/matches/:id/reject` body `{ reason }`
+- `POST /api/v1/matches/manual` body `{ orderId, paymentId, amountMinor, reason }`
+- `POST /api/v1/matches/:id/reverse` body `{ reason }` (OWNER/ADMIN)
+- `GET /api/v1/matches/:id/history`
+
+## Exports
+- `GET /api/v1/exports/reconciliation`
+- `GET /api/v1/exports/exceptions`

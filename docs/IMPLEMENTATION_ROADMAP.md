@@ -19,7 +19,7 @@ Work is delivered one milestone at a time. Each milestone ends with tests, docum
 - Tests for auth, hashing, refresh rotation, revocation, org isolation, roles, constraints.
 - Docs: AUTHENTICATION, DATABASE_SCHEMA, API_CONTRACT, SECURITY, LOCAL_DEVELOPMENT.
 
-## Milestone 2 — Orders, payments, CSV imports and reconciliation engine
+## Milestone 2 — Orders, payments, CSV imports and reconciliation engine (COMPLETE)
 
 - Order/payment CRUD + CSV import with templates and row-level errors.
 - Idempotent imports via fingerprints.

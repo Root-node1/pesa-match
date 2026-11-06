@@ -4,7 +4,7 @@ PesaMatch — payment reconciliation and exception management for small Kenyan b
 
 ## Status
 
-Milestone 1 complete: monorepo bootstrap + backend foundation + authentication + database models.
+Milestone 2 complete: orders, payments, CSV imports and reconciliation engine.
 
 ## Stack
 
@@ -80,12 +80,13 @@ Planned (Milestone 4).
 ## Implementation status
 
 - Backend foundation, auth, organizations, memberships, health, Prisma models implemented.
+- Orders, payments, CSV imports, reconciliation engine, human review, reporting and exports implemented.
 - Frontend scaffold present but product screens are Milestone 3.
 - Reconciliation engine is Milestone 2.
 
 ## Known limitations
 
-- No order/payment/reconciliation endpoints yet (Milestone 2).
+- CSV import requires integer minor units.
 - No SMS integration yet (Milestone 4).
 - Frontend is default template; product UI pending (Milestone 3).
 - Audit trail is application-level, not tamper-proof.

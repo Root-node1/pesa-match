@@ -8,6 +8,12 @@ import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { OrganizationsModule } from './organizations/organizations.module.js';
 import { MembershipsModule } from './memberships/memberships.module.js';
+import { OrdersModule } from './orders/orders.module.js';
+import { PaymentsModule } from './payments/payments.module.js';
+import { ImportsModule } from './imports/imports.module.js';
+import { ReconciliationModule } from './reconciliation/reconciliation.module.js';
+import { MatchesModule } from './matches/matches.module.js';
+import { ExportsModule } from './exports/exports.module.js';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter.js';
 
 @Module({
@@ -23,6 +29,12 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter.js';
     UsersModule,
     OrganizationsModule,
     MembershipsModule,
+    OrdersModule,
+    PaymentsModule,
+    ImportsModule,
+    ReconciliationModule,
+    MatchesModule,
+    ExportsModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })

@@ -38,3 +38,9 @@
 ## Headers
 
 - Helmet enabled.
+
+## Permissions matrix
+
+- STAFF: create/view orders/payments, run reconciliation, approve/reject suggestions, manual match.
+- FINANCE: same as STAFF.
+- ADMIN/OWNER: all above + reverse approved matches.

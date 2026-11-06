@@ -5,8 +5,8 @@ import { AppModule } from '../src/app.module.js';
 import { PrismaService } from '../src/database/prisma.service.js';
 import cookieParser from 'cookie-parser';
 
-process.env.DATABASE_URL = 'postgresql://pesa:pesa@localhost:5434/pesa_match_test?schema=public';
-process.env.JWT_ACCESS_SECRET = 'test-secret-at-least-32-characters-long!!';
+process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgresql://pesa:pesa@localhost:5434/pesa_match_test?schema=public';
+process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'test-secret-at-least-32-characters-long!!';
 process.env.CORS_ORIGINS = 'http://localhost:3000';
 process.env.NODE_ENV = 'test';
 
@@ -34,7 +34,7 @@ describe('Auth (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app) await app.close();
   });
 
   const base = '/api/v1/auth';

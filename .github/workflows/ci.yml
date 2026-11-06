@@ -26,7 +26,7 @@ jobs:
       - run: npm run lint -w apps/backend
       - run: npm run build -w apps/backend
       - run: npm run test -w apps/backend
-      - run: DATABASE_URL="postgresql://pesa:pesa@localhost:5432/pesa_match_test?schema=public" npm run test:e2e -w apps/backend
+      - run: DATABASE_URL="postgresql://pesa:pesa@localhost:5432/pesa_match_test?schema=public" JWT_ACCESS_SECRET="ci-test-secret-at-least-32-characters-long!!" CORS_ORIGINS="http://localhost:3000" npm run test:e2e -w apps/backend
   frontend:
     runs-on: ubuntu-latest
     steps:

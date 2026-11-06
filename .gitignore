@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+.dev.vars
+*.pem
+*.key
+*.crt
+
+# Build outputs
+dist/
+.output/
+.nuxt/
+.nitro/
+.wrangler/
+coverage/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docker
+docker-compose.override.yml

@@ -15,3 +15,6 @@ No database ports should be exposed publicly.
 - Container started and `/api/v1/health` returned `{"status":"ok","database":"up"}`.
 - Prisma migrations applied to PostgreSQL.
 - No secrets baked into image.
+
+## Dependency audit
+Production image (`npm prune --production`) reports 0 vulnerabilities.

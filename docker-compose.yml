@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pesa-match-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pesa
+      POSTGRES_PASSWORD: pesa
+      POSTGRES_DB: pesa_match
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - pesa_match_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pesa -d pesa_match"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pesa_match_pg_data:

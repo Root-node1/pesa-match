@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  FINANCE
+  STAFF
+}
+
+enum ReconciliationStatus {
+  MATCHED
+  PARTIALLY_PAID
+  UNMATCHED
+  REVIEW_REQUIRED
+  DUPLICATE_SUSPECTED
+}
+
+enum OrderStatus {
+  OPEN
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNALLOCATED
+  PARTIALLY_ALLOCATED
+  FULLY_ALLOCATED
+  DUPLICATE_SUSPECTED
+}
+
+enum MatchDecisionStatus {
+  SUGGESTED
+  APPROVED
+  REJECTED
+  REVERSED
+}
+
+enum NotificationStatus {
+  PENDING
+  SUBMITTED
+  DELIVERED
+  FAILED
+}
+
+model User {
+  id            String          @id @default(uuid())
+  email         String          @unique
+  passwordHash  String
+  firstName     String?
+  lastName      String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  memberships   Membership[]
+  refreshSessions RefreshSession[]
+  auditEvents   AuditEvent[]    @relation("AuditActor")
+}
+
+model Organization {
+  id            String          @id @default(uuid())
+  name          String
+  currency      String          @default("KES")
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  memberships   Membership[]
+  importBatches ImportBatch[]
+  orders        Order[]
+  payments      Payment[]
+  auditEvents   AuditEvent[]
+  notifications NotificationOutbox[]
+}
+
+model Membership {
+  id             String       @id @default(uuid())
+  userId         String
+  organizationId String
+  role           Role         @default(STAFF)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+  @@index([userId])
+}
+
+model RefreshSession {
+  id         String    @id @default(uuid())
+  userId     String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  userAgent  String?
+  ipAddress  String?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model ImportBatch {
+  id            String    @id @default(uuid())
+  organizationId String
+  type          String
+  sourceName    String?
+  status        String    @default("COMPLETED")
+  totalRows     Int       @default(0)
+  importedRows  Int       @default(0)
+  failedRows    Int       @default(0)
+  errorSummary  Json?
+  createdAt     DateTime  @default(now())
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  orders        Order[]
+  payments      Payment[]
+
+  @@index([organizationId])
+  @@index([organizationId, type])
+}
+
+model Order {
+  id                   String               @id @default(uuid())
+  organizationId       String
+  importBatchId        String?
+  sourceReference      String?
+  fingerprint          String?
+  customerName         String?
+  description          String?
+  amountMinor          BigInt
+  currency             String               @default("KES")
+  orderDate            DateTime?
+  status               OrderStatus          @default(OPEN)
+  reconciliationStatus ReconciliationStatus @default(UNMATCHED)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  organization         Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  importBatch          ImportBatch?         @relation(fields: [importBatchId], references: [id])
+  matches              PaymentMatch[]
+
+  @@unique([organizationId, fingerprint])
+  @@index([organizationId])
+  @@index([organizationId, sourceReference])
+}
+
+model Payment {
+  id                   String               @id @default(uuid())
+  organizationId       String
+  importBatchId        String?
+  sourceReference      String?
+  fingerprint          String?
+  payerName            String?
+  transactionReference String?
+  amountMinor          BigInt
+  currency             String               @default("KES")
+  paymentDate          DateTime?
+  status               PaymentStatus        @default(UNALLOCATED)
+  reconciliationStatus ReconciliationStatus @default(UNMATCHED)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  organization         Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  importBatch          ImportBatch?         @relation(fields: [importBatchId], references: [id])
+  matches              PaymentMatch[]
+
+  @@unique([organizationId, fingerprint])
+  @@index([organizationId])
+  @@index([organizationId, transactionReference])
+}
+
+model PaymentMatch {
+  id             String             @id @default(uuid())
+  organizationId String
+  orderId        String
+  paymentId      String
+  amountMinor    BigInt
+  status         MatchDecisionStatus @default(APPROVED)
+  isManual       Boolean            @default(false)
+  reason         String?
+  createdByUserId String?
+  reversedAt     DateTime?
+  reversedReason String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  order          Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  payment        Payment            @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([orderId])
+  @@index([paymentId])
+}
+
+model AuditEvent {
+  id             String        @id @default(uuid())
+  organizationId String
+  actorUserId    String?
+  action         String
+  entityType     String
+  entityId       String
+  before         Json?
+  after          Json?
+  metadata       Json?
+  createdAt      DateTime      @default(now())
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actor          User?         @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model NotificationOutbox {
+  id               String             @id @default(uuid())
+  organizationId   String
+  recipient        String
+  body             String
+  status           NotificationStatus @default(PENDING)
+  idempotencyKey   String
+  providerMessageId String?
+  attempts         Int                @default(0)
+  lastError        String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  sentAt           DateTime?
+  organization     Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, idempotencyKey])
+  @@index([organizationId, status])
+}

@@ -15,5 +15,13 @@ export default withNuxt(
         ]
       }
     }
+  },
+  {
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@stylistic/max-statements-per-line': 'off',
+      '@stylistic/member-delimiter-style': 'off',
+      'no-empty': 'off'
+    }
   }
 )

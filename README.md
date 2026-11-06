@@ -4,7 +4,7 @@ PesaMatch — payment reconciliation and exception management for small Kenyan b
 
 ## Status
 
-Milestone 2 complete: orders, payments, CSV imports and reconciliation engine.
+Milestone 3 complete: frontend integration foundation and designer handoff.
 
 ## Stack
 
@@ -32,7 +32,10 @@ See `docs/MONOREPO_SETUP.md`.
 ./run.sh migrate
 ```
 
-## Commands
+## Frontend
+
+Nuxt 4 app in `apps/frontend`. Screens: dashboard, orders, payments, imports, reconciliation, settings, auth.
+
 
 ```bash
 ./run.sh dev        # backend + frontend
@@ -81,14 +84,14 @@ Planned (Milestone 4).
 
 - Backend foundation, auth, organizations, memberships, health, Prisma models implemented.
 - Orders, payments, CSV imports, reconciliation engine, human review, reporting and exports implemented.
-- Frontend scaffold present but product screens are Milestone 3.
+- Frontend integrated with real backend; screens implemented.
 - Reconciliation engine is Milestone 2.
 
 ## Known limitations
 
 - CSV import requires integer minor units.
 - No SMS integration yet (Milestone 4).
-- Frontend is default template; product UI pending (Milestone 3).
+- Frontend uses default Nuxt UI template styling; designer refinement pending.
 - Audit trail is application-level, not tamper-proof.
 
 ## Documentation

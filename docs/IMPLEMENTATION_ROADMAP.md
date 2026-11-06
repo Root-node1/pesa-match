@@ -45,7 +45,7 @@ Work is delivered one milestone at a time. Each milestone ends with tests, docum
 - Fake provider for tests.
 - Docs: SMS_INTEGRATION, NOTIFICATION_FLOW, ENVIRONMENT_VARIABLES.
 
-## Milestone 5 — Deployment readiness and hackathon handoff
+## Milestone 5 — Deployment readiness and hackathon handoff (COMPLETE)
 
 - Backend Dockerfile, production config, health checks, migration procedure, structured logging.
 - Frontend Cloudflare build/Wrangler config.

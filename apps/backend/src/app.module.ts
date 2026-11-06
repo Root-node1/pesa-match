@@ -14,6 +14,7 @@ import { ImportsModule } from './imports/imports.module.js';
 import { ReconciliationModule } from './reconciliation/reconciliation.module.js';
 import { MatchesModule } from './matches/matches.module.js';
 import { ExportsModule } from './exports/exports.module.js';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { SmsModule } from './sms/sms.module.js';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter.js';
@@ -39,7 +40,11 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter.js';
     ExportsModule,
     NotificationsModule,
     SmsModule,
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
   ],
-  providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
+  providers: [
+    { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    { provide: 'APP_GUARD', useClass: ThrottlerGuard },
+  ],
 })
 export class AppModule {}

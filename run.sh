@@ -222,6 +222,23 @@ cmd_dev() {
   wait $BACKEND_PID $FRONTEND_PID
 }
 
+cmd_demo_seed() {
+  check_node
+  if [ -z "${DATABASE_URL:-}" ]; then
+    if [ -f apps/backend/.env ]; then
+      set -a; . apps/backend/.env; set +a
+    fi
+  fi
+  log "Running demo seed (idempotent)"
+  node scripts/demo-seed.mjs
+}
+
+cmd_health() {
+  local base="${1:-http://localhost:3001/api/v1}"
+  log "Checking health at $base/health"
+  curl -fsS "$base/health" && echo
+}
+
 cmd_help() {
   cat <<'EOF'
 PesaMatch development helper
@@ -238,6 +255,8 @@ Commands:
   test      Run backend unit and e2e tests
   lint      Lint backend and frontend
   build     Build backend and frontend
+  demo-seed Run idempotent demo data seed
+  health    Check backend health endpoint
   help      Show this help
 EOF
 }
@@ -254,6 +273,8 @@ main() {
     test) cmd_test ;;
     lint) cmd_lint ;;
     build) cmd_build ;;
+    demo-seed) cmd_demo_seed ;;
+    health) cmd_health "${2:-}" ;;
     help|--help|-h) cmd_help ;;
     *) err "Unknown command: $cmd"; cmd_help; exit 2 ;;
   esac

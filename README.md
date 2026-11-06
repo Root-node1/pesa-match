@@ -97,3 +97,11 @@ Provider abstraction and outbox implemented. Live ThriveWave submission unverifi
 ## Documentation
 
 `docs/` contains architecture, setup, auth, schema, API, security, env.
+
+## Docker (backend)
+
+```bash
+cd apps/backend
+docker build -t pesa-backend .
+docker run -p 3001:3001 --env-file .env pesa-backend
+```

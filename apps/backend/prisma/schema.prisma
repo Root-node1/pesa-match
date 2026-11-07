@@ -79,6 +79,8 @@ model Organization {
   orders        Order[]
   payments      Payment[]
   auditEvents   AuditEvent[]
+  reconciliationRuns ReconciliationRun[]
+  reconciliationExceptions ReconciliationException[]
   notifications NotificationOutbox[]
 }
 
@@ -182,6 +184,7 @@ model Payment {
 model PaymentMatch {
   id             String             @id @default(uuid())
   organizationId String
+  runId          String?
   orderId        String
   paymentId      String
   amountMinor    BigInt
@@ -193,12 +196,67 @@ model PaymentMatch {
   reversedReason String?
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
+  run            ReconciliationRun? @relation(fields: [runId], references: [id], onDelete: SetNull)
   order          Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
   payment        Payment            @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
   @@index([orderId])
   @@index([paymentId])
+}
+
+model ReconciliationRun {
+  id                      String                  @id @default(uuid())
+  organizationId          String
+  periodStart             DateTime
+  periodEnd               DateTime
+  currency                String                  @default("KES")
+  status                  String                  @default("RUNNING")
+  scope                   String                  @default("ALL_IMPORTED")
+  expectedOrderValueMinor BigInt                  @default(0)
+  receivedPaymentValueMinor BigInt                @default(0)
+  matchedValueMinor       BigInt                  @default(0)
+  outstandingValueMinor   BigInt                  @default(0)
+  createdByUserId         String?
+  completedAt             DateTime?
+  reopenedAt              DateTime?
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  organization            Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  matches                 PaymentMatch[]
+  exceptions              ReconciliationException[]
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+}
+
+model ReconciliationException {
+  id                 String               @id @default(uuid())
+  organizationId     String
+  runId              String?
+  type               String
+  status             String               @default("OPEN")
+  orderId            String?
+  paymentId          String?
+  importBatchId      String?
+  importRowNumber    Int?
+  expectedMinor      BigInt?
+  actualMinor        BigInt?
+  differenceMinor    BigInt?
+  description        String?
+  resolution         String?
+  resolutionReason   String?
+  resolvedByUserId   String?
+  resolvedAt         DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  run                ReconciliationRun?   @relation(fields: [runId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([organizationId, type])
+  @@unique([organizationId, runId, type, orderId, paymentId])
 }
 
 model AuditEvent {
